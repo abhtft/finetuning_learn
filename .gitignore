@@ -149,6 +149,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+gemma_env/
 .venv_overlay/
 .venv_t5/
 environment.yaml
