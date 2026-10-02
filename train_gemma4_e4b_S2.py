@@ -40,8 +40,8 @@ tokenizer = get_chat_template(
 )
 
 # 4. Load & Prepare Dataset (FineTome-100k)
-# 400 samples with 2 full epochs: 100 total steps (~20-22 mins runtime) to see multi-epoch variation
-SAMPLE_SIZE = 400
+# 1,200 samples is optimal for student learning: ~150 steps, ~25 mins runtime, full loss curve
+SAMPLE_SIZE = 1200
 print(f"Loading {SAMPLE_SIZE} samples from dataset for educational fine-tuning...")
 dataset = load_dataset("mlabonne/FineTome-100k", split=f"train[:{SAMPLE_SIZE}]")
 dataset = standardize_data_formats(dataset)
@@ -66,13 +66,13 @@ trainer = SFTTrainer(
         dataset_text_field="text",
         per_device_train_batch_size=1,
         gradient_accumulation_steps=8,  # Effective Batch Size = 8
-        num_train_epochs=2,             # 2 full epochs (400 / 8 * 2 = 100 total steps)
-        warmup_ratio=0.06,              # 6% warmup (~6 steps)
+        num_train_epochs=1,             # 1 full epoch (1,200 / 8 = 150 total steps)
+        warmup_ratio=0.06,              # 6% warmup (~9 steps)
         learning_rate=1.8e-4,
-        logging_steps=5,                # Log loss every 5 steps to see epoch 1 vs epoch 2 transition
+        logging_steps=5,                # Log loss every 5 steps for smooth curve visualization
         optim="adamw_8bit",
         weight_decay=0.01,
-        lr_scheduler_type="cosine",     # Cosine decay over the full 2 epochs
+        lr_scheduler_type="cosine",     # Cosine decay over the full run
         seed=3407,
         report_to="none",
         output_dir="gemma_4_e4b_output",
@@ -84,7 +84,7 @@ trainer = train_on_responses_only(trainer)
 
 # 7. Start Training
 print("\n" + "=" * 70)
-print(f"🔥 Starting Training: 2 Full Epochs on {len(dataset)} Samples (~{(len(dataset)//8) * 2} Steps)")
+print(f"🔥 Starting Training: 1 Full Epoch on {len(dataset)} Samples (~{len(dataset)//8} Steps)")
 print("=" * 70 + "\n")
 trainer_stats = trainer.train()
 
