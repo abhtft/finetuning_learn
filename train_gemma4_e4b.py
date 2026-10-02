@@ -8,6 +8,8 @@ from trl import SFTTrainer, SFTConfig
 max_seq_length = 1024  # Fits comfortably within 8GB VRAM
 load_in_4bit = True
 
+
+#
 model, tokenizer = FastModel.from_pretrained(
     model_name="unsloth/gemma-4-E4B-it",
     dtype=None,  # Auto-detects bfloat16 for RTX 50-series
