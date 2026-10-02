@@ -17,7 +17,7 @@ messages = [
     {
         "role": "user",
         "content": [
-            {"type": "text", "text": "Explain how LoRA fine-tuning works in simple terms."}
+            {"type": "text", "text": "Write essary on indaia"}
         ],
     }
 ]
@@ -33,7 +33,7 @@ inputs = tokenizer.apply_chat_template(
 outputs = model.generate(
     input_ids=inputs,
     max_new_tokens=256,
-    temperature=0.7,
+    temperature=0.3,
     top_p=0.9,
     use_cache=True,
 )

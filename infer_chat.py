@@ -96,9 +96,9 @@ def main():
                     input_ids=inputs,
                     streamer=streamer,
                     max_new_tokens=args.max_tokens,
-                    temperature=args.temperature,
+                    temperature=0.3,
                     top_p=args.top_p,
-                    repetition_penalty=1.1,
+                    repetition_penalty=1.05,
                     use_cache=True,
                 )
 
