@@ -76,7 +76,12 @@ FastModel.for_inference(model)
 
 # 3. Format conversational prompt using the model's chat template
 messages = [
-    {"role": "user", "content": "Explain the difference between supervised fine-tuning (SFT) and Direct Preference Optimization (DPO)."}
+    {
+        "role": "user",
+        "content": [
+            {"type": "text", "text": "Explain the difference between supervised fine-tuning (SFT) and Direct Preference Optimization (DPO)."}
+        ]
+    }
 ]
 
 inputs = tokenizer.apply_chat_template(
@@ -127,7 +132,12 @@ FastModel.for_inference(model)
 
 prompt = "Write a concise Python script to scrape top Hacker News headlines using requests and BeautifulSoup."
 
-messages = [{"role": "user", "content": prompt}]
+messages = [
+    {
+        "role": "user",
+        "content": [{"type": "text", "text": prompt}]
+    }
+]
 inputs = tokenizer.apply_chat_template(
     messages,
     tokenize=True,
@@ -196,7 +206,10 @@ while True:
         print("[Conversation history cleared]")
         continue
 
-    conversation_history.append({"role": "user", "content": user_input})
+    conversation_history.append({
+        "role": "user",
+        "content": [{"type": "text", "text": user_input}]
+    })
 
     inputs = tokenizer.apply_chat_template(
         conversation_history,
@@ -220,7 +233,10 @@ while True:
     # Decode and store assistant response in history
     prompt_len = inputs.shape[1]
     assistant_reply = tokenizer.decode(outputs[0][prompt_len:], skip_special_tokens=True)
-    conversation_history.append({"role": "assistant", "content": assistant_reply})
+    conversation_history.append({
+        "role": "assistant",
+        "content": [{"type": "text", "text": assistant_reply}]
+    })
 ```
 
 ---
@@ -487,9 +503,9 @@ def chat_stream(message, history):
     # Construct conversation history
     messages = []
     for user_msg, bot_msg in history:
-        messages.append({"role": "user", "content": user_msg})
-        messages.append({"role": "assistant", "content": bot_msg})
-    messages.append({"role": "user", "content": message})
+        messages.append({"role": "user", "content": [{"type": "text", "text": user_msg}]})
+        messages.append({"role": "assistant", "content": [{"type": "text", "text": bot_msg}]})
+    messages.append({"role": "user", "content": [{"type": "text", "text": message}]})
 
     inputs = tokenizer.apply_chat_template(
         messages,
