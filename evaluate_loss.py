@@ -33,11 +33,8 @@ tokenizer = get_chat_template(
     chat_template="gemma-4",
 )
 
-# Set model to evaluation mode
-FastModel.for_inference(model)
-
 # ==============================================================================
-# 2. Load Unseen / Held-Out Dataset (400-500 samples)
+# 2. Load Unseen / Held-Out Dataset (400 samples)
 # ==============================================================================
 print(f"\n📂 Loading unseen validation samples (indices {EVAL_SAMPLE_START} to {EVAL_SAMPLE_END})...")
 eval_dataset = load_dataset(
@@ -60,14 +57,17 @@ print(f"✅ Prepared {len(eval_dataset)} held-out evaluation samples.")
 # ==============================================================================
 # 3. Setup SFTTrainer for Standalone Evaluation
 # ==============================================================================
+# SFTTrainer requires a non-empty train_dataset to initialize Unsloth hooks
+dummy_train = eval_dataset.select(range(2))
+
 trainer = SFTTrainer(
     model=model,
     tokenizer=tokenizer,
-    train_dataset=None,
+    train_dataset=dummy_train,
     eval_dataset=eval_dataset,
     args=SFTConfig(
         dataset_text_field="text",
-        per_device_eval_batch_size=2,   # Batch size 2 for fast evaluation
+        per_device_eval_batch_size=2,   # Batch size 2 for evaluation
         max_seq_length=MAX_SEQ_LENGTH,
         report_to="none",
         output_dir="eval_temp_output",
