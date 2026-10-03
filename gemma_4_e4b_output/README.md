@@ -4,8 +4,8 @@ library_name: transformers
 model_name: gemma_4_e4b_output
 tags:
 - generated_from_trainer
-- sft
 - unsloth
+- sft
 - trl
 licence: license
 ---
